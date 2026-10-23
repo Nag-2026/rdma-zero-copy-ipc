@@ -59,3 +59,28 @@ This project uses Modern CMake for clean, modular compilation.
      Bash
      ./test_day1
 ```
+# Expected Output (Day 1)
+```text
+====================================================
+ Day 1: Modular Test Harness (Context & PD Setup)   
+====================================================
+
+[+] Found 1 RDMA device(s):
+    - Device 0: rxe0
+[+] Successfully opened verbs context for device.
+[+] Device Attributes Queried Successfully:
+    - Max Queue Pairs (QPs)   : 262144
+    - Max Memory Regions (MRs): 262144
+    - Max CQ Entries          : 65535
+    - Physical Port Count     : 1
+[+] Port 1 Attributes:
+    - Port State : 4 (Active = 4)
+    - Link Layer : Ethernet (RoCEv2)
+[+] Successfully allocated Protection Domain (PD address: 0x55dc1c2a12a0)
+
+[+] Cleaning up resources...
+    - Protection Domain deallocated.
+    - Device context closed.
+
+[SUCCESS] Day 1 modular execution complete!
+```
