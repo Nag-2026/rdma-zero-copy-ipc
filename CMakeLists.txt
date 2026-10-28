@@ -25,10 +25,13 @@ find_library(IBVERBS_LIB
 # Create core static library from src/
 add_library(rdma_core STATIC
     src/rdma_context.c
+    src/rdma_memory.c
 )
 
-# Executable test harness for Day 1
+# Day 1 Executable Target
 add_executable(test_day1 tests/test_day1_init.c)
-
-# Link the core library and libibverbs to the test executable
 target_link_libraries(test_day1 PRIVATE rdma_core ${IBVERBS_LIB})
+
+# Day 2 Executable Target (MANDATORY: must link rdma_core and IBVERBS_LIB)
+add_executable(test_day2 tests/test_day2_memory.c)
+target_link_libraries(test_day2 PRIVATE rdma_core ${IBVERBS_LIB})

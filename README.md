@@ -15,6 +15,8 @@ By bypassing the Linux network stack and operating directly on hardware-mapped v
 ## 📂 Repository Structure
 
 ```text
+## 📂 Repository Structure
+
 rdma-zero-copy-ipc/
 ├── CMakeLists.txt              # Modern CMake build configuration
 ├── README.md                   # Project documentation & architecture guide
@@ -22,9 +24,10 @@ rdma-zero-copy-ipc/
 │   └── rdma_common.h           # Shared structures, constants, and API prototypes
 ├── src/
 │   ├── rdma_context.c          # Day 1: Device discovery, context opening, & Protection Domains (PD)
-│   └── rdma_memory.c           # Day 2: POSIX mlock, cache alignment, & ibv_reg_mr (In Progress)
+│   └── rdma_memory.c           # Day 2: POSIX mlock, cache alignment, & ibv_reg_mr registration
 └── tests/
-    └── test_day1_init.c        # Standalone verification executable for device/PD initialization
+    ├── test_day1_init.c        # Standalone verification executable for device/PD initialization
+    └── test_day2_memory.c      # Standalone test harness for zero-copy memory pinning & registration
 ```
 
 # Prerequisites & Environment Setup
@@ -84,3 +87,15 @@ This project uses Modern CMake for clean, modular compilation.
 
 [SUCCESS] Day 1 modular execution complete!
 ```
+
+## 🛠️ Technical Implementation Milestones
+
+- **Day 1: Context Lifecycle & Protection Domains**
+  - Implemented dynamic device discovery (`ibv_get_device_list`) and hardware context binding (`ibv_open_device`).
+  - Queried physical HCA/emulator capabilities (`ibv_query_device`, `ibv_query_port`) to inspect maximum queue pairs, MTU sizes, and link layers (`IBV_LINK_LAYER_ETHERNET`).
+  - Allocated isolated **Protection Domains (`ibv_pd`)** to enforce memory security boundaries.
+
+- **Day 2: Zero-Copy Memory Pinning & Alignment**
+  - Integrated `posix_memalign` for 64-byte cache-line buffer alignment to prevent cache-line bouncing.
+  - Applied POSIX page locking (`mlock`) to pin virtual RAM pages and prevent OS paging/swapping overhead during DMA.
+  - Registered memory regions with the HCA driver via `ibv_reg_mr` using `IBV_ACCESS_LOCAL_WRITE`, `IBV_ACCESS_REMOTE_WRITE`, and `IBV_ACCESS_REMOTE_READ` flags, extracting local (`lkey`) and remote (`rkey`) security tokens.
