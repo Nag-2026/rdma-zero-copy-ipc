@@ -41,3 +41,9 @@ target_link_libraries(test_day2 PRIVATE rdma_core ${IBVERBS_LIB})
 # the full state machine transition lifecycle (RESET ➔ INIT ➔ RTR ➔ RTS).
 add_executable(test_day3 tests/test_day3_qp.c)
 target_link_libraries(test_day3 PRIVATE rdma_core ${IBVERBS_LIB})
+
+add_executable(test_day4_server tests/test_day4_server.c)
+target_link_libraries(test_day4_server PRIVATE rdma_core ${IBVERBS_LIB})
+
+add_executable(test_day4_client tests/test_day4_client.c)
+target_link_libraries(test_day4_client PRIVATE rdma_core ${IBVERBS_LIB})

@@ -11,13 +11,9 @@
 By bypassing the Linux network stack and operating directly on hardware-mapped verbs contexts, this engine achieves sub-microsecond latency and eliminates CPU context-switching overhead during data movement.
 
 ---
-
 ## 📂 Repository Structure
 
 ```text
-## 📂 Repository Structure
-## 📂 Repository Structure
-
 rdma-zero-copy-ipc/
 ├── CMakeLists.txt              # Modern CMake build configuration
 ├── README.md                   # Project documentation & architecture guide
@@ -26,11 +22,13 @@ rdma-zero-copy-ipc/
 ├── src/
 │   ├── rdma_context.c          # Day 1: Device discovery, context opening, & Protection Domains (PD)
 │   ├── rdma_memory.c           # Day 2: POSIX mlock, cache alignment, & ibv_reg_mr registration
-│   └── rdma_transport.c        # Day 3: Completion Queue (CQ), Queue Pair (QP), & state transitions
+│   └── rdma_transport.c        # Day 3 & 4: CQs, QPs, state transitions, & OOB TCP handshake
 └── tests/
     ├── test_day1_init.c        # Standalone verification executable for device/PD initialization
     ├── test_day2_memory.c      # Standalone test harness for zero-copy memory pinning & registration
-    └── test_day3_qp.c          # Standalone test harness for QP creation & state machine lifecycles
+    ├── test_day3_qp.c          # Standalone test harness for QP creation & state machine lifecycles
+    ├── test_day4_server.c      # RDMA receiver process executing OOB handshake and arming QP
+    └── test_day4_client.c      # RDMA sender process executing OOB handshake and arming QP
 ```
 
 # Prerequisites & Environment Setup
@@ -107,3 +105,8 @@ This project uses Modern CMake for clean, modular compilation.
   - Implemented Completion Queues (`ibv_cq`) for asynchronous work request notifications.
   - Configured Reliable Connection (`IBV_QPT_RC`) Queue Pairs (`ibv_qp`) associated with the Protection Domain and Completion Queue.
   - Programmatically drove the InfiniBand transport state machine through its complete lifecycle: **RESET ➔ INIT ➔ RTR (Ready-to-Receive) ➔ RTS (Ready-to-Send)**.
+
+- **Day 4: Out-of-Band TCP Handshake & Metadata Exchange**
+  - Implemented POSIX socket utilities for out-of-band (OOB) TCP communication between independent processes.
+  - Exchanged critical connection metadata (`qp_num`, `lid`, remote virtual memory address `addr`, and `rkey`) across endpoints.
+  - Configured Soft-RoCE Global Routing Headers (`GRH`) for loopback routing and successfully drove both client and server queue pairs into the **RTS (Ready-to-Send)** state.
