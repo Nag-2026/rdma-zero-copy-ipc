@@ -18,6 +18,11 @@ void cleanup_rdma_resources(struct ibv_context *context, struct ibv_pd *pd);
 struct ibv_mr* register_memory_region(struct ibv_pd *pd, void **buffer, size_t size);
 void deregister_memory_region(struct ibv_mr *mr, void *buffer);
 
-
+/* Day 3 Prototypes: CQ and QP Management */
+struct ibv_cq* create_completion_queue(struct ibv_context *context, int cqe_capacity);
+struct ibv_qp* create_queue_pair(struct ibv_pd *pd, struct ibv_cq *cq, enum ibv_qp_type qp_type);
+int modify_qp_to_init(struct ibv_qp *qp, uint8_t port_num);
+int modify_qp_to_rtr(struct ibv_qp *qp, uint32_t dest_qp_num, uint16_t dest_lid, uint8_t port_num);
+int modify_qp_to_rts(struct ibv_qp *qp);
+void cleanup_transport_resources(struct ibv_qp *qp, struct ibv_cq *cq);
 #endif /* RDMA_COMMON_H */
-

@@ -26,6 +26,7 @@ find_library(IBVERBS_LIB
 add_library(rdma_core STATIC
     src/rdma_context.c
     src/rdma_memory.c
+    src/rdma_transport.c
 )
 
 # Day 1 Executable Target
@@ -35,3 +36,8 @@ target_link_libraries(test_day1 PRIVATE rdma_core ${IBVERBS_LIB})
 # Day 2 Executable Target (MANDATORY: must link rdma_core and IBVERBS_LIB)
 add_executable(test_day2 tests/test_day2_memory.c)
 target_link_libraries(test_day2 PRIVATE rdma_core ${IBVERBS_LIB})
+
+# Day 3 verify Completion Queue creation, Queue Pair allocation, and 
+# the full state machine transition lifecycle (RESET ➔ INIT ➔ RTR ➔ RTS).
+add_executable(test_day3 tests/test_day3_qp.c)
+target_link_libraries(test_day3 PRIVATE rdma_core ${IBVERBS_LIB})
